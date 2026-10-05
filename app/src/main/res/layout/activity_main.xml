@@ -1,41 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="20dp">
+    android:fillViewport="true">
 
-    <TextView
-        android:id="@+id/tvResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Chưa có dữ liệu phản hồi"
-        android:textSize="18sp"
-        android:layout_marginBottom="20dp" />
-
-    <Button
-        android:id="@+id/btnOpenSecond"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sang Màn hình 2" />
-
-    <Button
-        android:id="@+id/btnCall"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Gọi điện thoại (Implicit Intent)" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <Button
-        android:id="@+id/btnOpenWeb"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Mở Website (Implicit Intent)" />
+        <!-- Thẻ CardView Hồ sơ Sinh viên -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
 
-    <Button
-        android:id="@+id/btnSendEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Soạn Email (Implicit Intent)" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="20dp">
 
-</LinearLayout>
+                <ImageView
+                    android:id="@+id/imgAvatar"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginBottom="12dp"
+                    android:src="@mipmap/ic_launcher_round" />
+
+                <TextView
+                    android:id="@+id/tvName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nguyễn Văn An"
+                    android:textColor="#000000"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="MSSV: 2415053122206 | Lớp: 22CT1"
+                    android:textColor="#555555"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvGpaBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="GPA: 3.80 (Xuất sắc)"
+                    android:textColor="#2E7D32"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- 4 Nút thao tác chức năng -->
+        <Button
+            android:id="@+id/btnEditProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#34B469"
+            android:text="Chỉnh Sửa Hồ Sơ (Result API)" />
+
+        <Button
+            android:id="@+id/btnChangeAvatar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#00BCD4"
+            android:text="Đổi Avatar từ Gallery (GetContent)" />
+
+        <Button
+            android:id="@+id/btnCallHotline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#4E5D6C"
+            android:text="Gọi Cố Vấn Học Tập (Implicit)" />
+
+        <Button
+            android:id="@+id/btnRequestCamera"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FF9800"
+            android:text="Kiểm Tra Quyền Camera (Permission)" />
+
+    </LinearLayout>
+</ScrollView>

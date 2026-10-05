@@ -1,10 +1,12 @@
 package com.ute.lab3_twoscreens
 
+import android.Manifest
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -14,76 +16,92 @@ import com.ute.lab3_twoscreens.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var secondLauncher: ActivityResultLauncher<Intent>
+    private var currentStudent = Student("2415053122206", "Nguyễn Văn An", "22CT1", "an@ute.udn.vn", 3.80)
+
+    // 1. Contract 1: Nhận dữ liệu phản hồi từ EditProfileActivity
+    private val editLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val updatedStudent = result.data?.getSerializableExtra("UPDATED_STUDENT") as? Student
+            updatedStudent?.let {
+                currentStudent = it
+                bindStudentData(currentStudent)
+                toast("Đã lưu thông tin mới của ${it.name}!")
+            }
+        }
+    }
+
+    // 2. Contract 2: Mở Photo Picker chọn ảnh từ Gallery
+    private val galleryLauncher: ActivityResultLauncher<String> = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            binding.imgAvatar.setImageURI(it)
+            toast("Đã thay đổi ảnh đại diện!")
+        }
+    }
+
+    // 3. Contract 3: Xin quyền Camera thời gian chạy (Runtime Permission)
+    private val cameraLauncher: ActivityResultLauncher<String> = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            toast("Đã cấp quyền Camera! Sẵn sàng chụp ảnh.")
+        } else {
+            toast("Bạn đã từ chối quyền Camera!")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        secondLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val reply = result.data?.getStringExtra("EXTRA_REPLY") ?: "Không có dữ liệu"
-                binding.tvResult.text = "Kết quả nhận được: $reply"
+        bindStudentData(currentStudent)
+
+        // Nút 1: Mở màn hình Sửa hồ sơ
+        binding.btnEditProfile.setOnClickListener {
+            val intent = Intent(this, EditProfileActivity::class.java).apply {
+                putExtra("STUDENT_DATA", currentStudent)
             }
+            editLauncher.launch(intent)
         }
 
-        binding.btnOpenSecond.setOnClickListener {
-            val intent = Intent(this, SecondActivity::class.java).apply {
-                putExtra("EXTRA_MSG", "Xin chào từ Màn hình 1!")
-            }
-            secondLauncher.launch(intent)
+        // Nút 2: Mở thư viện chọn ảnh
+        binding.btnChangeAvatar.setOnClickListener {
+            galleryLauncher.launch("image/*")
         }
 
-        binding.btnCall.setOnClickListener {
+        // Nút 3: Gọi điện thoại
+        binding.btnCallHotline.setOnClickListener {
             makePhoneCall("0905123456")
         }
 
-        binding.btnOpenWeb.setOnClickListener {
-            openWebsite("https://ute.udn.vn")
-        }
-
-        binding.btnSendEmail.setOnClickListener {
-            sendEmail("daotao@ute.udn.vn", "Báo cáo Thực hành Lab 3", "Nội dung báo cáo...")
+        // Nút 4: Yêu cầu quyền Camera
+        binding.btnRequestCamera.setOnClickListener {
+            cameraLauncher.launch(Manifest.permission.CAMERA)
         }
     }
 
+    private fun bindStudentData(student: Student) {
+        binding.tvName.text = student.name
+        binding.tvDetails.text = "MSSV: ${student.id} | Lớp: ${student.className}"
+        binding.tvGpaBadge.text = "GPA: ${student.gpa}"
+    }
 
     private fun makePhoneCall(phoneNumber: String) {
         val dialIntent = Intent(Intent.ACTION_DIAL).apply {
             data = Uri.parse("tel:$phoneNumber")
         }
-        safeStartImplicitIntent(dialIntent, "Chọn ứng dụng gọi điện")
-    }
-
-    private fun openWebsite(webUrl: String) {
-        val webIntent = Intent(Intent.ACTION_VIEW).apply {
-            data = Uri.parse(webUrl)
-        }
-        safeStartImplicitIntent(webIntent, "Chọn trình duyệt Web")
-    }
-
-    private fun sendEmail(email: String, subject: String, body: String) {
-        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:$email")
-            putExtra(Intent.EXTRA_SUBJECT, subject)
-            putExtra(Intent.EXTRA_TEXT, body)
-        }
-        safeStartImplicitIntent(emailIntent, "Chọn ứng dụng Email")
-    }
-
-    private fun safeStartImplicitIntent(intent: Intent, chooserTitle: String) {
         try {
-            val chooser = Intent.createChooser(intent, chooserTitle)
-            startActivity(chooser)
+            startActivity(Intent.createChooser(dialIntent, "Chọn ứng dụng gọi điện"))
         } catch (e: ActivityNotFoundException) {
-            Toast.makeText(
-                this,
-                "Không tìm thấy ứng dụng phù hợp để thực hiện tác vụ!",
-                Toast.LENGTH_SHORT
-            ).show()
+            toast("Không tìm thấy ứng dụng gọi điện!")
         }
+    }
+
+    private fun toast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
