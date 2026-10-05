@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/tvResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chưa có dữ liệu phản hồi"
+        android:textSize="18sp"
+        android:layout_marginBottom="20dp" />
+
+    <Button
+        android:id="@+id/btnOpenSecond"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sang Màn hình 2" />
+
+    <Button
+        android:id="@+id/btnCall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gọi điện thoại (Implicit Intent)" />
+
+    <Button
+        android:id="@+id/btnOpenWeb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mở Website (Implicit Intent)" />
+
+    <Button
+        android:id="@+id/btnSendEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Soạn Email (Implicit Intent)" />
+
+</LinearLayout>
